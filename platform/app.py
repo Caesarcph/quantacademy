@@ -1,0 +1,127 @@
+import streamlit as st
+
+from platform.progress.storage import (
+    DEFAULT_XP_PER_MODULE,
+    complete_module,
+    load_progress,
+    save_progress,
+    touch_activity,
+)
+
+
+st.set_page_config(
+    page_title="QuantAcademy",
+    page_icon="🎓",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+
+MODULES = [
+    "Module 1: Python Foundations",
+    "Module 2: Technical Analysis",
+    "Module 3: Statistical Analysis",
+    "Module 4: Backtesting",
+    "Module 5: Risk Management",
+    "Module 6: Machine Learning",
+    "Module 7: Deep Learning",
+    "Module 8: NLP",
+    "Module 9: LLM Trading",
+    "Module 10: Multi-Agent Systems",
+]
+
+
+def _render_sidebar(progress):
+    st.sidebar.title("🎓 QuantAcademy")
+
+    st.sidebar.subheader("📊 Your Progress")
+    st.sidebar.write(f"**Streak:** {progress.streak_days} day(s)")
+    st.sidebar.write(f"**XP:** {progress.xp}")
+    st.sidebar.write(f"**Completed modules:** {len(progress.completed_modules)}/{len(MODULES)}")
+
+    with st.sidebar.expander("Completed", expanded=False):
+        if progress.completed_modules:
+            for m in progress.completed_modules:
+                st.write(f"✅ {m}")
+        else:
+            st.caption("No modules completed yet.")
+
+
+def main():
+    # Load + persist in session
+    if "qa_progress" not in st.session_state:
+        st.session_state.qa_progress = load_progress()
+
+    progress = st.session_state.qa_progress
+    progress = touch_activity(progress)
+    save_progress(progress)
+
+    _render_sidebar(progress)
+
+    menu = ["Home", *MODULES, "Paper Trading", "Strategy Builder"]
+    choice = st.sidebar.radio("Navigation", menu)
+
+    if choice == "Home":
+        st.title("Welcome to QuantAcademy 🎓")
+        st.markdown(
+            """
+> Interactive quantitative finance learning platform.
+
+### 🎯 Your Journey Starts Here
+Select a module from the sidebar to begin learning.
+            """
+        )
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Current Streak (days)", progress.streak_days)
+        c2.metric("XP Earned", progress.xp)
+        c3.metric("Modules Completed", f"{len(progress.completed_modules)}/{len(MODULES)}")
+
+        st.divider()
+        st.subheader("Quick actions")
+        if st.button("Mark today as active (streak)"):
+            progress = touch_activity(progress)
+            save_progress(progress)
+            st.session_state.qa_progress = progress
+            st.success("Activity saved.")
+
+    elif choice in MODULES:
+        st.title(choice)
+        st.info("🚧 This module is currently under development.")
+
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            already = choice in progress.completed_modules
+            st.write("### ✅ Completion")
+            st.write(
+                "Mark this module as complete to earn XP (local progress only)."
+            )
+            st.write(f"**Reward:** {DEFAULT_XP_PER_MODULE} XP")
+
+            if already:
+                st.success("You already completed this module.")
+            if st.button(
+                "Mark module complete", disabled=already, use_container_width=True
+            ):
+                progress = complete_module(progress, choice)
+                save_progress(progress)
+                st.session_state.qa_progress = progress
+                st.success("Saved! XP awarded.")
+
+        with col2:
+            st.write("### Next steps")
+            st.markdown(
+                """
+- Add lesson content under `curriculum/` (not created yet)
+- Add quizzes/exercises + autograder
+- Replace JSON storage with a DB when multi-user
+                """
+            )
+
+    else:
+        st.title(choice)
+        st.info("🚧 This feature is currently under development. Check back soon!")
+
+
+if __name__ == "__main__":
+    main()

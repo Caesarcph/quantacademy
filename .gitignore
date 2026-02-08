@@ -1,7 +1,18 @@
+# Python
 __pycache__/
-*.pyc
-.env
+*.py[cod]
+*.egg-info/
+.venv/
 venv/
-node_modules/
+
+# Streamlit
+.streamlit/
+
+# Env
+.env
+
+# OS
 .DS_Store
 
+# Local progress storage
+.quantacademy/

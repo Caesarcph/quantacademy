@@ -1,0 +1,1 @@
+"""QuantAcademy Streamlit platform package."""

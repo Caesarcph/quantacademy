@@ -17,6 +17,10 @@ Most quant learning resources are either:
 
 ## ✨ Features
 
+### ✅ Local Progress Tracking (MVP)
+- Stores XP / streak / module completion locally in `~/.quantacademy/progress.json`
+- Designed for single-user local development; can be replaced by DB later
+
 ### 📚 Progressive Curriculum
 - **10 Modules**: From Python basics to multi-agent systems
 - **50+ Interactive Lessons**: Jupyter notebooks with embedded exercises
@@ -157,18 +161,30 @@ quantacademy/
 git clone https://github.com/Caesarcph/quantacademy.git
 cd quantacademy
 
-# Create virtual environment
+# Create virtual environment (recommended)
 python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
 
-# Install dependencies
+# Activate virtual environment
+source venv/bin/activate        # On Linux/Mac
+# venv\Scripts\activate         # On Windows
+
+# Install core dependencies
 pip install -r requirements.txt
+
+# Optional: Install development dependencies
+pip install -r requirements-dev.txt  # If available
+
+# Set up environment variables
+cp .env.example .env           # Copy environment template
+# Edit .env file with your API keys if needed
 
 # Download sample data
 python scripts/download_data.py
 
-# Launch platform
+# Launch the platform
 streamlit run platform/app.py
+
+# Open your browser to: http://localhost:8501
 ```
 
 ### Docker
