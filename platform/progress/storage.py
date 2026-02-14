@@ -76,10 +76,44 @@ def load_progress(path: str | None = None) -> Progress:
 
 
 def save_progress(progress: Progress, path: str | None = None) -> str:
+    """Persist progress to disk.
+
+    Uses an atomic write (write temp file + os.replace) to reduce the chance of
+    a partially-written JSON file if the process is interrupted.
+    """
+
     path = path or default_progress_path()
     progress.updated_at = _utcnow_iso()
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(progress.to_dict(), f, indent=2, ensure_ascii=False)
+
+    parent = os.path.dirname(path)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
+
+    tmp_path = ""
+    try:
+        import tempfile
+
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=parent or None,
+            prefix=".progress.",
+            suffix=".json.tmp",
+            delete=False,
+        ) as f:
+            tmp_path = f.name
+            json.dump(progress.to_dict(), f, indent=2, ensure_ascii=False)
+            f.flush()
+            os.fsync(f.fileno())
+
+        os.replace(tmp_path, path)
+    finally:
+        if tmp_path and os.path.exists(tmp_path):
+            try:
+                os.remove(tmp_path)
+            except OSError:
+                pass
+
     return path
 
 
