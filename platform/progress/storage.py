@@ -148,3 +148,39 @@ def complete_module(progress: Progress, module_name: str, xp: int = DEFAULT_XP_P
         progress.xp += int(xp)
 
     return progress
+
+
+def validate_progress(progress: Progress) -> tuple[bool, list[str]]:
+    """Validate progress data integrity.
+
+    Returns:
+        A tuple of (is_valid, list_of_issues).
+        If is_valid is True, the list will be empty.
+    """
+    issues: list[str] = []
+
+    if progress.xp < 0:
+        issues.append(f"Invalid XP: {progress.xp} (must be >= 0)")
+
+    if progress.streak_days < 0:
+        issues.append(f"Invalid streak: {progress.streak_days} (must be >= 0)")
+
+    # Check for duplicate modules
+    seen = set()
+    for mod in progress.completed_modules:
+        if mod in seen:
+            issues.append(f"Duplicate module: {mod}")
+        seen.add(mod)
+
+    # Validate date format
+    try:
+        date.fromisoformat(progress.last_active_date)
+    except ValueError:
+        issues.append(f"Invalid date format: {progress.last_active_date}")
+
+    try:
+        datetime.fromisoformat(progress.updated_at.replace("Z", "+00:00"))
+    except ValueError:
+        issues.append(f"Invalid datetime format: {progress.updated_at}")
+
+    return len(issues) == 0, issues

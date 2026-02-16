@@ -6,6 +6,7 @@ from platform.progress.storage import (
     load_progress,
     save_progress,
     touch_activity,
+    validate_progress,
 )
 
 
@@ -50,7 +51,15 @@ def _render_sidebar(progress):
 def main():
     # Load + persist in session
     if "qa_progress" not in st.session_state:
-        st.session_state.qa_progress = load_progress()
+        progress = load_progress()
+        # Validate loaded progress
+        is_valid, issues = validate_progress(progress)
+        if not is_valid:
+            st.sidebar.error("⚠️ Progress data has issues:")
+            for issue in issues:
+                st.sidebar.warning(f"- {issue}")
+            st.session_state.qa_progress_invalid = True
+        st.session_state.qa_progress = progress
 
     progress = st.session_state.qa_progress
     progress = touch_activity(progress)
