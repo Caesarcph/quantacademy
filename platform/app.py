@@ -2,6 +2,7 @@ import streamlit as st
 
 from platform.progress.storage import (
     DEFAULT_XP_PER_MODULE,
+    Progress,
     complete_module,
     load_progress,
     save_progress,
@@ -32,7 +33,14 @@ MODULES = [
 ]
 
 
-def _render_sidebar(progress):
+def _persist_progress(progress: Progress) -> Progress:
+    """Save progress and sync session state in one place."""
+    save_progress(progress)
+    st.session_state.qa_progress = progress
+    return progress
+
+
+def _render_sidebar(progress: Progress) -> None:
     st.sidebar.title("🎓 QuantAcademy")
 
     st.sidebar.subheader("📊 Your Progress")
@@ -48,7 +56,7 @@ def _render_sidebar(progress):
             st.caption("No modules completed yet.")
 
 
-def main():
+def main() -> None:
     # Load + persist in session
     if "qa_progress" not in st.session_state:
         progress = load_progress()
@@ -63,7 +71,7 @@ def main():
 
     progress = st.session_state.qa_progress
     progress = touch_activity(progress)
-    save_progress(progress)
+    progress = _persist_progress(progress)
 
     _render_sidebar(progress)
 
@@ -90,8 +98,7 @@ Select a module from the sidebar to begin learning.
         st.subheader("Quick actions")
         if st.button("Mark today as active (streak)"):
             progress = touch_activity(progress)
-            save_progress(progress)
-            st.session_state.qa_progress = progress
+            progress = _persist_progress(progress)
             st.success("Activity saved.")
 
     elif choice in MODULES:
@@ -113,8 +120,7 @@ Select a module from the sidebar to begin learning.
                 "Mark module complete", disabled=already, use_container_width=True
             ):
                 progress = complete_module(progress, choice)
-                save_progress(progress)
-                st.session_state.qa_progress = progress
+                progress = _persist_progress(progress)
                 st.success("Saved! XP awarded.")
 
         with col2:
