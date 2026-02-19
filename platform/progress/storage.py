@@ -58,19 +58,40 @@ class Progress:
 
 
 def load_progress(path: str | None = None) -> Progress:
+    """Load progress from disk.
+
+    Returns a fresh default state when the file is missing or malformed.
+    """
     path = path or default_progress_path()
     if not os.path.exists(path):
         return Progress.new()
 
-    with open(path, "r", encoding="utf-8") as f:
-        raw = json.load(f)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+    except (OSError, json.JSONDecodeError, TypeError, ValueError):
+        # Corrupted or unreadable local progress should not block app startup.
+        return Progress.new()
 
     # Be permissive about missing keys (forward compatibility).
     p = Progress.new()
-    p.xp = int(raw.get("xp", p.xp))
-    p.completed_modules = list(raw.get("completed_modules", p.completed_modules))
+
+    try:
+        p.xp = int(raw.get("xp", p.xp))
+    except (TypeError, ValueError):
+        pass
+
+    modules = raw.get("completed_modules", p.completed_modules)
+    if isinstance(modules, list):
+        p.completed_modules = [str(m) for m in modules]
+
     p.last_active_date = str(raw.get("last_active_date", p.last_active_date))
-    p.streak_days = int(raw.get("streak_days", p.streak_days))
+
+    try:
+        p.streak_days = int(raw.get("streak_days", p.streak_days))
+    except (TypeError, ValueError):
+        pass
+
     p.updated_at = str(raw.get("updated_at", p.updated_at))
     return p
 
