@@ -158,6 +158,7 @@ def touch_activity(progress: Progress) -> Progress:
 
 
 def complete_module(progress: Progress, module_name: str, xp: int = DEFAULT_XP_PER_MODULE) -> Progress:
+    """Mark module complete and award XP once per unique module."""
     module_name = module_name.strip()
     if not module_name:
         return progress

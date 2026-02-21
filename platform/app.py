@@ -1,3 +1,5 @@
+"""Streamlit entrypoint for QuantAcademy MVP UI."""
+
 import streamlit as st
 
 from platform.progress.storage import (
@@ -19,7 +21,7 @@ st.set_page_config(
 )
 
 
-MODULES = [
+MODULES: list[str] = [
     "Module 1: Python Foundations",
     "Module 2: Technical Analysis",
     "Module 3: Statistical Analysis",
@@ -57,6 +59,7 @@ def _render_sidebar(progress: Progress) -> None:
 
 
 def main() -> None:
+    """Render the app and manage local progress lifecycle."""
     # Load + persist in session
     if "qa_progress" not in st.session_state:
         progress = load_progress()
