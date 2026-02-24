@@ -206,3 +206,29 @@ def validate_progress(progress: Progress) -> tuple[bool, list[str]]:
         issues.append(f"Invalid datetime format: {progress.updated_at}")
 
     return len(issues) == 0, issues
+
+
+def get_stats(progress: Progress, total_modules: int = 10) -> dict[str, Any]:
+    """Calculate summary statistics for user progress.
+
+    Args:
+        progress: The user's current progress.
+        total_modules: Total number of modules in the curriculum.
+
+    Returns:
+        A dictionary with computed statistics.
+    """
+    completion_rate = (
+        len(progress.completed_modules) / total_modules * 100
+        if total_modules > 0
+        else 0.0
+    )
+
+    return {
+        "xp": progress.xp,
+        "streak_days": progress.streak_days,
+        "modules_completed": len(progress.completed_modules),
+        "modules_total": total_modules,
+        "completion_rate": round(completion_rate, 1),
+        "last_active": progress.last_active_date,
+    }

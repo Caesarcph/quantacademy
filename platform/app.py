@@ -6,6 +6,7 @@ from platform.progress.storage import (
     DEFAULT_XP_PER_MODULE,
     Progress,
     complete_module,
+    get_stats,
     load_progress,
     save_progress,
     touch_activity,
@@ -92,10 +93,12 @@ Select a module from the sidebar to begin learning.
             """
         )
 
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Current Streak (days)", progress.streak_days)
-        c2.metric("XP Earned", progress.xp)
-        c3.metric("Modules Completed", f"{len(progress.completed_modules)}/{len(MODULES)}")
+        stats = get_stats(progress, len(MODULES))
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Current Streak (days)", stats["streak_days"])
+        c2.metric("XP Earned", stats["xp"])
+        c3.metric("Modules Completed", f"{stats['modules_completed']}/{stats['modules_total']}")
+        c4.metric("Completion Rate", f"{stats['completion_rate']}%")
 
         st.divider()
         st.subheader("Quick actions")
