@@ -6,6 +6,7 @@ from platform.progress.storage import (
     DEFAULT_XP_PER_MODULE,
     Progress,
     complete_module,
+    get_achievements,
     get_stats,
     load_progress,
     save_progress,
@@ -57,6 +58,15 @@ def _render_sidebar(progress: Progress) -> None:
                 st.write(f"✅ {m}")
         else:
             st.caption("No modules completed yet.")
+
+    achievements = get_achievements(progress)
+    with st.sidebar.expander("🏆 Achievements", expanded=False):
+        if achievements:
+            for badge in achievements:
+                st.write(f"{badge['icon']} **{badge['name']}**")
+                st.caption(badge["desc"])
+        else:
+            st.caption("No achievements unlocked yet.")
 
 
 def main() -> None:

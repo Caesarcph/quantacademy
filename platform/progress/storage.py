@@ -232,3 +232,48 @@ def get_stats(progress: Progress, total_modules: int = 10) -> dict[str, Any]:
         "completion_rate": round(completion_rate, 1),
         "last_active": progress.last_active_date,
     }
+
+
+
+def get_achievements(progress: Progress) -> list[dict[str, str]]:
+    """Return unlocked achievement badges for the current user progress."""
+    achievements: list[dict[str, str]] = []
+    modules_completed = len(progress.completed_modules)
+
+    if modules_completed >= 1:
+        achievements.append(
+            {
+                "icon": "🌱",
+                "name": "First Steps",
+                "desc": "Complete your first module",
+            }
+        )
+
+    if modules_completed >= 5:
+        achievements.append(
+            {
+                "icon": "📚",
+                "name": "Halfway There",
+                "desc": "Complete 5 modules",
+            }
+        )
+
+    if modules_completed >= 10:
+        achievements.append(
+            {
+                "icon": "🏆",
+                "name": "Quant Graduate",
+                "desc": "Complete all 10 modules",
+            }
+        )
+
+    if progress.streak_days >= 7:
+        achievements.append(
+            {
+                "icon": "💎",
+                "name": "Consistent",
+                "desc": "Maintain a 7-day streak",
+            }
+        )
+
+    return achievements
