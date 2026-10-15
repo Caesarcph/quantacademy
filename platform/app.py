@@ -1,8 +1,16 @@
 """Streamlit entrypoint for QuantAcademy MVP UI."""
 
+import sys
+from pathlib import Path
+
 import streamlit as st
 
-from platform.progress.storage import (
+# This folder is named "platform", which clashes with Python's stdlib
+# ``platform`` module (already imported by Streamlit), so
+# ``from platform.progress...`` fails. Import ``progress`` from this folder directly.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from progress.storage import (  # noqa: E402
     DEFAULT_XP_PER_MODULE,
     Progress,
     complete_module,
