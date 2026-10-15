@@ -1,10 +1,26 @@
 # 🎓 QuantAcademy
 
-> Interactive quantitative finance learning platform with hands-on coding exercises, live market simulations, and progressive curriculum from basics to LLM-powered trading.
+> Interactive quantitative finance learning platform (early MVP). The goal: hands-on coding exercises, market simulations, and a progressive curriculum from basics to LLM-powered trading.
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.30+-red.svg)](https://streamlit.io)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+## 📌 Status
+
+**Early MVP: a Streamlit shell with local progress tracking. No lesson content exists yet.**
+
+What works today:
+- A Streamlit app (`platform/app.py`) with a sidebar listing the 10 planned modules plus "Paper Trading" and "Strategy Builder" pages.
+  All of these pages are placeholders ("under development").
+- On each module page you can click **Mark module complete** to earn 100 XP.
+- Local progress (XP, daily streak, completed modules) saved to `~/.quantacademy/progress.json`, with basic validation.
+- Four basic achievement badges shown in the sidebar.
+- `scripts/download_data.py` writes small **synthetic** sample CSVs (no network, no API keys). The app does not read them yet.
+
+Everything else in this README (lessons, notebooks, exercises, auto-grading, paper trading, strategy builder,
+LLM Lab, leaderboards, certificates) is **planned** and not implemented. See [ROADMAP.md](ROADMAP.md).
+There are no automated tests yet.
 
 ## 🎯 Why This Project?
 
@@ -13,33 +29,39 @@ Most quant learning resources are either:
 - **Too fragmented**: YouTube videos and blog posts without structure
 - **Outdated**: Don't cover modern approaches like LLM integration
 
-**QuantAcademy bridges this gap** with a structured, hands-on curriculum that takes you from basic indicators to cutting-edge AI trading strategies.
+**QuantAcademy aims to bridge this gap** with a structured, hands-on curriculum that takes you from basic indicators to modern AI trading strategies.
 
 ## ✨ Features
 
-### ✅ Local Progress Tracking (MVP)
+### ✅ Local Progress Tracking (MVP, implemented)
 - Stores XP / streak / module completion locally in `~/.quantacademy/progress.json`
+- Atomic writes; malformed or missing files fall back to a fresh state
 - Designed for single-user local development; can be replaced by DB later
 
-### 📚 Progressive Curriculum
-- **10 Modules**: From Python basics to multi-agent systems
-- **50+ Interactive Lessons**: Jupyter notebooks with embedded exercises
-- **Real Market Data**: Practice with actual historical data
-- **Instant Feedback**: Automated grading and hints
+### ✅ Basic Achievements (MVP, implemented)
+- Sidebar badges unlocked from local progress (see [Gamification System](#-gamification-system))
 
-### 🎮 Interactive Sandbox
+### 📚 Progressive Curriculum (planned)
+- **10 Modules**: From Python basics to multi-agent systems (currently placeholder pages in the app)
+- **49 Interactive Lessons**: Jupyter notebooks with embedded exercises (planned; see outline below)
+- **Real Market Data**: Practice with actual historical data (planned; only synthetic samples today)
+- **Instant Feedback**: Automated grading and hints (planned)
+
+### 🎮 Interactive Sandbox (planned)
 - **Paper Trading Simulator**: Test strategies with fake money, real data
 - **Strategy Playground**: Drag-and-drop strategy builder
 - **Backtesting Arena**: Compare your strategy against benchmarks
 - **LLM Lab**: Experiment with GPT/Claude for market analysis
 
-### 🏆 Gamification
-- **Achievement System**: Earn badges for milestones
+### 🏆 Gamification (planned extensions)
+- **More Achievements**: Badges for quizzes, projects and trading milestones
 - **Leaderboards**: Weekly paper trading competitions
 - **Projects**: Real-world capstone projects with peer review
 - **Certificates**: Completion certificates for LinkedIn
 
-## 📖 Curriculum Overview
+## 📖 Curriculum Overview (planned)
+
+Module titles below appear as placeholder pages in the app; none of the lessons have been written yet.
 
 ```
 Module 1: Python for Finance Foundations
@@ -116,41 +138,30 @@ Module 10: Multi-Agent Systems (Expert)
 
 ```
 quantacademy/
-├── curriculum/
-│   ├── module_01_python_foundations/
-│   │   ├── lesson_01_numpy_pandas/
-│   │   │   ├── lesson.ipynb         # Interactive lesson
-│   │   │   ├── exercises.ipynb      # Practice problems
-│   │   │   ├── solutions.ipynb      # Reference solutions
-│   │   │   └── quiz.yaml            # Auto-graded quiz
-│   │   └── ...
-│   ├── module_02_technical_analysis/
-│   └── ...
-├── sandbox/
-│   ├── paper_trading/               # Paper trading simulator
-│   ├── strategy_builder/            # Visual strategy builder
-│   ├── backtest_arena/              # Backtesting environment
-│   └── llm_lab/                     # LLM experimentation
 ├── platform/
-│   ├── app.py                       # Main Streamlit app
-│   ├── components/
-│   │   ├── lesson_viewer.py
-│   │   ├── code_editor.py
-│   │   ├── chart_widget.py
-│   │   └── quiz_component.py
-│   ├── auth/                        # User authentication
-│   ├── progress/                    # Progress tracking
-│   └── gamification/                # Achievements, leaderboards
+│   ├── __init__.py
+│   ├── app.py                       # Main Streamlit app (navigation, placeholders, progress UI)
+│   └── progress/
+│       ├── __init__.py
+│       └── storage.py               # JSON progress storage, streaks, XP, achievements
+├── scripts/
+│   └── download_data.py             # Writes synthetic sample CSVs (no download, no API keys)
 ├── data/
-│   ├── market_data/                 # Historical data
-│   ├── news_data/                   # Sample news datasets
-│   └── user_data/                   # User progress (local)
-├── grading/
-│   ├── autograder.py                # Exercise grading
-│   └── rubrics/                     # Grading criteria
-├── tests/
-└── docs/
+│   ├── market_data/
+│   │   └── aapl_sample_daily.csv    # 10 synthetic daily bars
+│   └── news_data/
+│       └── sample_finance_news.csv  # 3 synthetic headlines
+├── .env.example                     # Placeholder for future API keys (not read by the code yet)
+├── requirements.txt                 # streamlit
+├── requirements-dev.txt             # pytest, ruff, black
+├── CONTRIBUTING.md
+├── ROADMAP.md
+└── LICENSE
 ```
+
+Planned directories (not created yet): `curriculum/` (lesson notebooks, exercises, quizzes), `sandbox/`
+(paper trading, strategy builder, backtest arena, LLM lab), `platform/components/`, `platform/auth/`,
+`platform/gamification/`, `grading/` (autograder), `tests/`, `docs/`.
 
 ## 🚀 Quick Start
 
@@ -171,14 +182,13 @@ source venv/bin/activate        # On Linux/Mac
 # Install core dependencies
 pip install -r requirements.txt
 
-# Optional: Install development dependencies
-pip install -r requirements-dev.txt  # If available
+# Optional: Install development dependencies (pytest, ruff, black)
+pip install -r requirements-dev.txt
 
-# Set up environment variables
-cp .env.example .env           # Copy environment template
-# Edit .env file with your API keys if needed
+# Optional: environment template (no variables are used by the current code)
+cp .env.example .env
 
-# Download sample data
+# Optional: regenerate the synthetic sample data in data/ (overwrites the committed sample CSVs)
 python scripts/download_data.py
 
 # Launch the platform
@@ -187,104 +197,59 @@ streamlit run platform/app.py
 # Open your browser to: http://localhost:8501
 ```
 
-### Docker
+### Cloud Deployment (untested)
 
 ```bash
-docker-compose up -d
-# Open http://localhost:8501
-```
-
-### Cloud Deployment
-
-```bash
-# Deploy to Streamlit Cloud (free)
+# Deploy to Streamlit Cloud (free) - not yet tried for this repo
 # 1. Fork this repo
 # 2. Go to share.streamlit.io
-# 3. Deploy from your fork
+# 3. Deploy from your fork with main file path: platform/app.py
 ```
 
-## 📸 Screenshots
-
-### Lesson View
-```
-┌─────────────────────────────────────────────────────────────┐
-│ Module 2: Technical Analysis > Lesson 2.2: Trend Indicators │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ## Moving Averages                                         │
-│                                                             │
-│  A moving average smooths price data by creating a          │
-│  constantly updated average price...                        │
-│                                                             │
-│  [Interactive Chart: AAPL with 20/50 SMA]                   │
-│                                                             │
-│  ### Try It Yourself                                        │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ # Calculate 20-day SMA for the 'close' column       │   │
-│  │ sma_20 = df['close'].rolling(___).mean()            │   │
-│  │                                                     │   │
-│  │ [Run Code]  [Hint]  [Solution]                      │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│  ✅ Exercise 1/5 Complete    [Next Exercise →]              │
-│                                                             │
-├─────────────────────────────────────────────────────────────┤
-│ Progress: ████████░░ 80%    ⭐ 450 XP    🏆 3 Badges         │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Paper Trading Simulator
-```
-┌─────────────────────────────────────────────────────────────┐
-│               Paper Trading Simulator                        │
-├─────────────────────────────────────────────────────────────┤
-│ Portfolio Value: $107,234.56 (+7.23%)                       │
-│                                                             │
-│ [AAPL Chart with Entry/Exit Points]                         │
-│                                                             │
-│ Open Positions:                                             │
-│ ┌────────────────────────────────────────────────────────┐ │
-│ │ AAPL   100 shares  @ $178.50   P&L: +$234.00 (+1.3%)  │ │
-│ │ GOOGL   50 shares  @ $142.30   P&L: -$45.00 (-0.6%)   │ │
-│ └────────────────────────────────────────────────────────┘ │
-│                                                             │
-│ Quick Trade: [AAPL ▼] [100] [BUY] [SELL]                    │
-│                                                             │
-│ Strategy Running: SMA Crossover ✅                          │
-│ Next Signal Check: 14:30:00                                 │
-└─────────────────────────────────────────────────────────────┘
-```
+Docker support is planned (no `Dockerfile` / `docker-compose.yml` yet).
 
 ## 🎮 Gamification System
 
 ### Achievements
 
+Implemented today (computed from local progress):
+
 | Badge | Name | Requirement |
 |-------|------|-------------|
-| 🌱 | First Steps | Complete Module 1 |
+| 🌱 | First Steps | Complete 1 module |
+| 📚 | Halfway There | Complete 5 modules |
+| 🏆 | Quant Graduate | Complete all 10 modules |
+| 💎 | Consistent | 7-day learning streak |
+
+Planned:
+
+| Badge | Name | Requirement |
+|-------|------|-------------|
 | 📊 | Chart Master | Pass all Technical Analysis quizzes |
 | 🔬 | Data Scientist | Complete ML module with 90%+ |
 | 🤖 | AI Trader | Build your first LLM strategy |
-| 💎 | Consistent | 30-day learning streak |
 | 🏆 | Top Trader | Weekly paper trading top 10 |
 
 ### XP System
 
-| Action | XP |
-|--------|-----|
-| Complete Lesson | +50 |
-| Pass Quiz (>80%) | +100 |
-| Complete Project | +500 |
-| Weekly Trading Challenge | +200 |
-| Help in Community | +25 |
+| Action | XP | Status |
+|--------|-----|--------|
+| Mark module complete | +100 | Implemented (once per module) |
+| Complete Lesson | +50 | Planned |
+| Pass Quiz (>80%) | +100 | Planned |
+| Complete Project | +500 | Planned |
+| Weekly Trading Challenge | +200 | Planned |
+| Help in Community | +25 | Planned |
 
 ## 🛠️ Development Roadmap
 
+Detailed list in [ROADMAP.md](ROADMAP.md).
+
 ### Phase 1: Core Platform (Weeks 1-4)
-- [ ] Streamlit application scaffold
+- [x] Streamlit application scaffold
 - [ ] Lesson viewer with Jupyter integration
 - [ ] Code editor with execution sandbox
-- [ ] Progress tracking system
+- [x] Progress tracking system (local JSON, single user)
 - [ ] User authentication (local)
 
 ### Phase 2: Curriculum Development (Weeks 5-10)
@@ -305,7 +270,7 @@ docker-compose up -d
 - [ ] Module 9-10: LLM & Multi-agent
 
 ### Phase 5: Gamification & Community (Weeks 19-22)
-- [ ] Achievement system
+- [x] Achievement system (basic, 4 badges)
 - [ ] Leaderboards
 - [ ] Discussion forums
 - [ ] Peer review for projects
@@ -316,7 +281,10 @@ docker-compose up -d
 - [ ] Documentation
 - [ ] Public launch
 
-## 💡 Sample Lesson: LLM Trading Agent
+## 💡 Sample Lesson: LLM Trading Agent (planned)
+
+Illustrative design sketch for Module 9.5. The `quantacademy.llm` package and `TradingAgent` class do **not** exist yet,
+so this code will not run.
 
 ```python
 # Module 9.5: Building Trading Agents
@@ -387,12 +355,11 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 📄 License
 
-MIT License - Educational use encouraged!
+[MIT License](LICENSE) - Educational use encouraged!
 
 ## 🙏 Acknowledgments
 
 - Built with [Streamlit](https://streamlit.io)
-- Financial data from [Yahoo Finance](https://finance.yahoo.com)
 - Inspired by Coursera, DataCamp, and QuantConnect
 
 ---
